@@ -1,3 +1,4 @@
+#include <string.h>
 #include "screen.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -10,7 +11,7 @@
 // On an arduino LEONARDO:   2(SDA),  3(SCL), ...
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+static Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // '0', 128x32px
 const unsigned char epd_bitmap_0 [] PROGMEM = {
@@ -198,15 +199,54 @@ const unsigned char* epd_bitmap_allArray[5] = {
   epd_bitmap_4
 };
 
+typedef struct {
+    uint8_t x;
+    uint8_t y;
+    bool changed;
+    char data[screenDataLen];
+} screenData_t;
+
+screenData_t screenData[SCREEN_DATA_LEN] = {
+    [SCREEN_DATA_WIFI_CONNECTION] = (screenData_t) {.x = 0, .y = 0, .changed = false},
+    [SCREEN_DATA_WIFI_IP] = (screenData_t) {.x = 0, .y = 8, .changed = false},
+    [SCREEN_DATA_BATT_VOLTAGE] = (screenData_t) {.x = 0, .y = 16, .changed = false},
+    [SCREEN_DATA_STATUS_INFO] = (screenData_t) {.x = 0, .y = 24, .changed = false}
+};
+
+void parrotAnimation(void) {
+
+}
+
+void displayInformation(void) {
+    bool needToDisplay = false;
+    for (uint8_t i = 0; i < SCREEN_DATA_LEN; i++) {
+        if (screenData[i].changed == true) {
+            needToDisplay = true;
+        }
+    }
+
+    if (needToDisplay == true) {    
+        display.clearDisplay();
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        for (uint8_t i = 0; i < SCREEN_DATA_LEN; i++) {
+            display.setCursor(screenData[i].x, screenData[i].y);
+            display.println(screenData[i].data);
+            screenData[i].changed = false;
+        }
+        display.display();
+    }
+}
+
 void screenInit(void) {
     // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
     if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-        Serial.println(F("SSD1306 allocation failed"));
+        // Serial.println(F("SSD1306 allocation failed"));
         for(;;); // Don't proceed, loop forever
     }
 }
 
-void parrotAnimation(void) {
+void screenAnimateParrot(void) {
     static int x = 0;
     static int dx = 10;
     static int index = 0;
@@ -225,22 +265,22 @@ void parrotAnimation(void) {
     index = (index + 1) % epd_bitmap_allArray_LEN;
 }
 
+void screenDisplayData(screenDataType dataType, char *data) {
+    if (dataType >= SCREEN_DATA_LEN) {
+        return;
+    }
+    memset((void *) screenData[dataType].data, 0, screenDataLen);
+    strncpy(screenData[dataType].data, data, screenDataLen);
+    screenData[dataType].changed = true;
+    return;
+}
+
 void screenTask(void) {
-    static const uint32_t animationTime_ms = 10000;
     static const uint32_t screenUpdatePeriod_ms = 75;
     static uint32_t lastDisplayTime_ms = 0;
     uint32_t currentTime_ms = millis();
     if (lastDisplayTime_ms + screenUpdatePeriod_ms <= currentTime_ms) {
-        if (currentTime_ms <= animationTime_ms) {
-            parrotAnimation();
-        } else {
-            display.clearDisplay();
-            display.setTextSize(1);
-            display.setTextColor(WHITE);
-            display.setCursor(0, 10);
-            display.println("Hello, world!");
-            display.display(); 
-        }
+        displayInformation();
         lastDisplayTime_ms = currentTime_ms;
     }
 }
