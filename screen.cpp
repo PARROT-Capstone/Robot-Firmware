@@ -209,8 +209,8 @@ typedef struct {
 screenData_t screenData[SCREEN_DATA_LEN] = {
     [SCREEN_DATA_WIFI_CONNECTION] = (screenData_t) {.x = 0, .y = 0, .changed = false},
     [SCREEN_DATA_WIFI_IP] = (screenData_t) {.x = 0, .y = 8, .changed = false},
-    [SCREEN_DATA_BATT_VOLTAGE] = (screenData_t) {.x = 0, .y = 16, .changed = false},
-    [SCREEN_DATA_STATUS_INFO] = (screenData_t) {.x = 0, .y = 24, .changed = false}
+    [SCREEN_DATA_STATUS_INFO] = (screenData_t) {.x = 0, .y = 16, .changed = false},
+    [SCREEN_DATA_BATT_VOLTAGE] = (screenData_t) {.x = 0, .y = 24, .changed = false}
 };
 
 void parrotAnimation(void) {

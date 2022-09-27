@@ -3,6 +3,7 @@
 #include "server.h"
 #include "screen.h"
 #include "drivetrain.h"
+#include "neopixel.h"
 
 static const char* ssid = "Fios-T9wDR";//"CMU-DEVICE";
 static const char* password = "bland94toy84bun";//"";
@@ -14,21 +15,24 @@ void handlerFunction() {
 
     if (dtype == "speed") {
         drivetrainSetSpeed((uint8_t) server.arg("speed").toInt());
-    } else if (dtype == "rgbi") {
-        const String r_s = server.arg("r");
-        const String g_s = server.arg("g");
-        const String b_s = server.arg("b");
-        const String index_s = server.arg("index");
-        int index = index_s.toInt();
-        int red = r_s.toInt();
-        int green = g_s.toInt();
-        int blue = b_s.toInt();
+    } else if (dtype == "pallet") {
+        int pallet = server.arg("power").toInt();
+        if (pallet == HIGH) {
+            digitalWrite(ELECTROMAGNET_PIN, HIGH);
+        } else {
+            digitalWrite(ELECTROMAGNET_PIN, LOW);
+        }
+    } else if (dtype == "robotNumber") {
+        neopixelSetRobotNumber((uint8_t) server.arg("robotNumber").toInt());
     }
 
     server.send(200, "text/html", "");
 }
 
 void serverInit(void) {
+    pinMode(ELECTROMAGNET_PIN, OUTPUT);
+    digitalWrite(ELECTROMAGNET_PIN, LOW);
+
     WiFi.begin(ssid, password);
     while(WiFi.status() != WL_CONNECTED) {
         screenAnimateParrot();
@@ -45,11 +49,5 @@ void serverInit(void) {
 }
 
 void serverTask(void) {
-    // static bool serverStarted = false;
-    // if (serverStarted == false) {
-        
-    //     serverStarted = true;
-    // } else {
-        server.handleClient();
-    // }
+    server.handleClient();
 }

@@ -18,8 +18,6 @@ void heartbeatTask(void) {
 void setup() {
     Serial.begin(9600);
     pinMode(HEARTBEAT_PIN, OUTPUT);
-    pinMode(ELECTROMAGNET_PIN, OUTPUT);
-    digitalWrite(ELECTROMAGNET_PIN, LOW);
 
     screenInit();
     neopixelInit();

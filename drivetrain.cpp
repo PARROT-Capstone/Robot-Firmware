@@ -7,7 +7,11 @@ static Servo servo2;
 static volatile uint8_t speed = 90;
 
 void drivetrainSetSpeed(uint8_t newSpeed) {
-    speed = newSpeed;
+    if (newSpeed > 180) {
+        speed = 90;
+    } else {
+        speed = newSpeed;
+    }
 }
 
 void drivetrainInit(void) {
