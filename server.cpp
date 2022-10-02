@@ -5,8 +5,8 @@
 #include "drivetrain.h"
 #include "neopixel.h"
 
-static const char* ssid = "Fios-T9wDR";//"CMU-DEVICE";
-static const char* password = "bland94toy84bun";//"";
+static const char* ssid = "CMU-DEVICE";
+static const char* password = "";
 
 static ESP8266WebServer server(80);
 
@@ -14,7 +14,8 @@ void handlerFunction() {
     const String dtype = server.arg("dtype");
 
     if (dtype == "speed") {
-        drivetrainSetSpeed((uint8_t) server.arg("speed").toInt());
+        drivetrainSetSpeed((uint8_t) server.arg("servo1").toInt(),
+                           (uint8_t) server.arg("servo2").toInt());
     } else if (dtype == "pallet") {
         int pallet = server.arg("power").toInt();
         if (pallet == HIGH) {
