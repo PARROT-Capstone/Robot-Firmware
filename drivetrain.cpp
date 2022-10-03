@@ -7,7 +7,6 @@ static const uint8_t maxSpeed = 180;
 static Servo servo1;
 static Servo servo2;
 
-
 void drivetrainSetSpeed(uint8_t speed1, uint8_t speed2) {
     if (speed1 > maxSpeed) {
         speed1 = zeroSpeed;
