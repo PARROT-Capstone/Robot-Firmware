@@ -226,43 +226,43 @@ void displayInformation(void) {
     }
 
     if (needToDisplay == true) {    
-        display.clearDisplay();
-        display.setTextSize(1);
-        display.setTextColor(WHITE);
-        for (uint8_t i = 0; i < SCREEN_DATA_LEN; i++) {
-            display.setCursor(screenData[i].x, screenData[i].y);
-            display.println(screenData[i].data);
-            screenData[i].changed = false;
-        }
-        display.display();
+        // display.clearDisplay();
+        // display.setTextSize(1);
+        // display.setTextColor(WHITE);
+        // for (uint8_t i = 0; i < SCREEN_DATA_LEN; i++) {
+        //     display.setCursor(screenData[i].x, screenData[i].y);
+        //     display.println(screenData[i].data);
+        //     screenData[i].changed = false;
+        // }
+        // display.display();
     }
 }
 
 void screenInit(void) {
-    // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-    if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-        // Serial.println(F("SSD1306 allocation failed"));
-        for(;;); // Don't proceed, loop forever
-    }
+    // // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+    // if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    //     // Serial.println(F("SSD1306 allocation failed"));
+    //     for(;;); // Don't proceed, loop forever
+    // }
 }
 
 void screenAnimateParrot(void) {
-    static int x = 0;
-    static int dx = 10;
-    static int index = 0;
-    display.clearDisplay();
-    display.drawBitmap(0,0,epd_bitmap_allArray[index], 128, 32, SSD1306_WHITE);
-    display.setTextSize(1);             
-    display.setTextColor(WHITE);        
-    display.setCursor(x,0);
-    display.println("PARROT");
-    display.display();
-    x += dx;
-    if (x >= 90 || x <= 0)
-    {
-        dx = -dx;
-    }
-    index = (index + 1) % epd_bitmap_allArray_LEN;
+    // static int x = 0;
+    // static int dx = 10;
+    // static int index = 0;
+    // display.clearDisplay();
+    // display.drawBitmap(0,0,epd_bitmap_allArray[index], 128, 32, SSD1306_WHITE);
+    // display.setTextSize(1);             
+    // display.setTextColor(WHITE);        
+    // display.setCursor(x,0);
+    // display.println("PARROT");
+    // display.display();
+    // x += dx;
+    // if (x >= 90 || x <= 0)
+    // {
+    //     dx = -dx;
+    // }
+    // index = (index + 1) % epd_bitmap_allArray_LEN;
 }
 
 void screenDisplayData(screenDataType dataType, char *data) {

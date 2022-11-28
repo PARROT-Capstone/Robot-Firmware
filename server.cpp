@@ -5,6 +5,8 @@
 #include "drivetrain.h"
 #include "neopixel.h"
 
+// modified from https://randomnerdtutorials.com/esp8266-web-server/
+
 static const char* ssid = "CMU-DEVICE";
 static const char* password = "";
 
@@ -46,6 +48,7 @@ void serverInit(void) {
     sprintf(ipInfo, "IP: %s", WiFi.localIP().toString().c_str());
     screenDisplayData(SCREEN_DATA_WIFI_IP, ipInfo);
     server.on("/", handlerFunction);
+    Serial.println(WiFi.localIP());
     server.begin();
 }
 
